@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.BookstoreController">
+   <top>
+      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="Title" />
+            <TextField fx:id="bookTitleTextfield" />
+            <Button mnemonicParsing="false" onAction="#addBook" text="Add" />
+         </children>
+      </VBox>
+   </top>
+   <center>
+      <TextArea fx:id="bookshelfTextArea" prefHeight="200.0" prefWidth="200.0" text="put list of books here" BorderPane.alignment="CENTER" />
+   </center>
+   <left>
+      <ComboBox fx:id="shelfComboBox" prefWidth="150.0" BorderPane.alignment="CENTER" />
+   </left>
+   <right>
+      <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="Rating: " />
+            <TextField fx:id="ratingTextfield" />
+            <Button mnemonicParsing="false" onAction="#addRating" text="Add" />
+         </children>
+      </HBox>
+   </right>
+   <bottom>
+      <Button mnemonicParsing="false" onAction="#getHighestRatedBook" text="Highest Rated Book" BorderPane.alignment="CENTER" />
+   </bottom>
+</BorderPane>
