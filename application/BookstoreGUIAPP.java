@@ -18,7 +18,7 @@ public class BookstoreGUIAPP extends Application {
 	public void start(Stage primaryStage) {
 		FXMLLoader loader = new FXMLLoader();
 		try {
-			BorderPane root = loader.load(new FileInputStream("src/view/BookstoreView.fxml"));
+			BorderPane root = loader.load(new FileInputStream("view/BookstoreView.fxml"));
 			primaryStage.setScene(new Scene(root,300,400));
 		} catch (FileNotFoundException e) {
 			System.out.println("Can't open the fxml file");
