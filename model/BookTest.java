@@ -1,208 +1,197 @@
-package model;
-
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class BookTest {
+import java.io.*;
 
-	// Testing constructors
-	@Test 
-	public void test_Constructor_emptyTitle()
-	{
-		Book b = new Book("");
-		assertEquals("Created book with empty title", "", b.getTitle());
-		assertEquals("Created book with no ratings yet", 0, b.getAverageRating(), 0.000001);
-		assertEquals("Created book with no ratings yet", 0, b.getHighestRating(), 0.000001);
+public class BookTest extends FormatTester{
+	
+ 	public class BookMock extends Book{
+		int next = 0;
+
+		public BookMock(String mockTitle, int mockNumberOfWords) {
+			super(mockTitle, mockNumberOfWords);
 		}
+		
+		public BookMock(BookMock c) {
+			super(c);
+		}
+		
+		public int minutesToConsume(){
+			return next;
+		}
+	} 
 
+	public static final String CLASSNAME = "Book";
+	
+	public BookTest() {
+		super(CLASSNAME, false);
+	}
+		
+	private void testClassDefinition(){
+		String[] instanceVars = {"String title", "int numberOfWords"};
+		assertTrue("Instance variables should be private with correct name and type.", instanceVariablesArePrivate(instanceVars));
+
+		assertTrue("Class should not have the default constructor.", noDefaultConstructor());
+		
+		String[] abstractMethods = {"int minutesToConsume()"};
+		assertTrue("Class should have abstract method minutesToConsume that returns an int (minimize whitespace in signature).", hasRequiredAbstractMethods(abstractMethods));
+		
+		String[] protectedMethods = {"void setTitle", "void setNumberOfWords", "int getNumberOfWords"};
+		assertTrue("Class should have protected methods setTitle, setNumberOfWords and getNumberOfWords.", hasRequiredProtectedMethods(protectedMethods));
+
+	}
+	
+	// Testing constructors
+	@Test
+	public void test_Constructor_numberOfWords_Zero_GoodNumber(){
+		testClassDefinition();
+		Book c = new BookMock("Black Beauty", 0);
+		assertEquals("Created book with valid but zero words", 0, c.getNumberOfWords());
+	}
+	
+	@Test
+	public void test_Constructor_numberOfWords_LessThanZero_BadNumber(){
+		testClassDefinition();
+		Book c = new BookMock("Heidi", -1);
+		assertEquals("Created book with an invalid number of words", 0, c.getNumberOfWords());
+	}
+	
+	@Test
+	public void test_Constructor_numberOfWords_AtMax_GoodNumber(){
+		testClassDefinition();
+		Book c = new BookMock("Black Beauty", 500000);
+		assertEquals("Created book with valid and maximum words", 500000, c.getNumberOfWords());
+	}
+	
+	@Test
+	public void test_Constructor_numberOfWords_OverMax_GoodNumber(){
+		testClassDefinition();
+		Book c = new BookMock("Heidi", 500001);
+		assertEquals("Created book with an invalid number of words", 0, c.getNumberOfWords());
+	}
+	
 	@Test 
-	public void test_Constructor_nonemptyTitle()
+	public void testCopyConstructor()
 	{
-		Book b = new Book("Gulliver's Travels");
-		assertEquals("Created book with title", "Gulliver's Travels", b.getTitle());
+		testClassDefinition();
+		BookMock c = new BookMock("Detropia", 35000);
+		Book c1 = new BookMock(c);
+		assertEquals("Created book with title Detropia", "Detropia", c1.getTitle());
+		assertEquals("Created book with numberOfWords 35000", 35000, c1.getNumberOfWords());
+	
+	}
+	
+	// Testing setter and getters
+	@Test
+	public void test_setter_and_getter_title(){
+		testClassDefinition();
+		Book c = new BookMock("Old Title", 1);
+		c.setTitle("New Title");
+		assertEquals("Changed title", "New Title", c.getTitle());
 	}
 	
 	@Test
-	public void test_CopyConstructor_emptyTitle_noRatings()
-	{
-		Book b = new Book("");
-		Book b1 = new Book(b);
-		
-		assertEquals("Created book with empty title", "", b1.getTitle());
-		assertEquals("Created book with no ratings yet", 0, b1.getAverageRating(), 0.000001);
-		assertEquals("Created book with no ratings yet", 0, b1.getHighestRating(), 0.000001);
-		
+	public void test_setter_and_getter_numberOfWords_GoodNumber(){
+		testClassDefinition();
+		Book c = new BookMock("Black Beauty", 1);
+		c.setNumberOfWords(7500);
+		assertEquals("Created book with valid number of words", 7500, c.getNumberOfWords());
 	}
 	
 	@Test
-	public void test_CopyConstructor_hasTitle_oneRatings()
-	{
-		Book b = new Book("Roots");
-		b.addRating(5.0);
-		Book b1 = new Book(b);
-		assertEquals("Created book with title", "Roots", b1.getTitle());
-		assertEquals("Created book with one rating: 5.0", 5.0, b1.getAverageRating(), 0.000001);
-		assertEquals("Created book with one rating: 5.0", 5.0, b1.getHighestRating(), 0.000001);
-	}
- 	
-	@Test
-	public void test_CopyConstructor_multipleRatings()
-	{
-		Book b = new Book("Roots");
-		b.addRating(9.0);
-		b.addRating(3.0);
-		b.addRating(10.0);
-		b.addRating(5.0);
-		Book b1 = new Book(b);
-		
-		assertEquals("Created book with title", "Roots", b1.getTitle());
-		assertEquals("Created book with multiple ratings (9.0,3.0,10.0,5.0)", 6.75, b1.getAverageRating(), 0.000001);
-		assertEquals("Created book with multiple ratings (9.0,3.0,10.0,5.0)", 10.0, b1.getHighestRating(), 0.000001);
-	}
-	
-	// Testing getters
-	
-	@Test
-	public void test_setter_and_getter_title_emptyString(){
-		Book c = new Book("");
-		assertEquals("Set title to empty string", "", c.getTitle());
-	}
-	
-	@Test 
-	public void test_setter_and_getter_title_nonEmpty(){
-		Book b = new Book("One Hundred Years of Solitude");
-		assertEquals("non-empty title", "One Hundred Years of Solitude", b.getTitle());
-	}
-		
-			
-	// Testing other functions
-	@Test
-	public void test_addRating_toolow()
-	{
-		Book b = new Book("The Adventures of Peter Rabbit");
-		b.addRating(-1.0);
-	
-		assertEquals("Added a single rating less than zero", 0.0, b.getAverageRating(), 0.000001);
-		assertEquals("Added a single rating less than zero", 0.0, b.getHighestRating(), 0.000001);
+	public void test_setter_and_getter_numberOfWords_Zero_GoodNumber(){
+		testClassDefinition();
+		Book c = new BookMock("Black Beauty", 1);
+		c.setNumberOfWords(0);
+		assertEquals("Created book with valid but zero words", 0, c.getNumberOfWords());
 	}
 	
 	@Test
-	public void test_addRating_tooHigh()
-	{
-		Book b = new Book("The Tailor of Gloucester");
-		b.addRating(11.0);
-	
-		assertEquals("Added a single rating greater than ten", 10.0, b.getAverageRating(), 0.000001);
-		assertEquals("Added a single rating greater than ten", 10.0, b.getHighestRating(), 0.000001);
+	public void test_setter_and_getter_numberOfWords_LessThanZero_BadNumber(){
+		testClassDefinition();
+		Book c = new BookMock("Heidi", 0);
+		c.setNumberOfWords(-1);
+		assertEquals("Created book with an invalid number of words", 0, c.getNumberOfWords());
 	}
 	
 	@Test
-	public void test_addRating_twoRatings()
-	{
-		Book b = new Book("The Tale of Tom Kitten");
-		b.addRating(8.0);
-		b.addRating(6.0);
-	
-		assertEquals("Added two ratings", 7.0, b.getAverageRating(), 0.000001);
-		assertEquals("Added two ratings", 8.0, b.getHighestRating(), 0.000001);
+	public void test_setter_and_getter_numberOfWords_AtMax_GoodNumber(){
+		testClassDefinition();
+		Book c = new BookMock("Black Beauty", 0);
+		c.setNumberOfWords(500000);
+		assertEquals("Created book with valid but 500000 words", 500000, c.getNumberOfWords());
 	}
 	
 	@Test
-	public void test_addRating_multipleRatings()
-	{
-		Book b = new Book("The Tale of Tom Kitten");
-		b.addRating(8.0);
-		b.addRating(6.0);
-		b.addRating(-2);
-		b.addRating(11.0);
-		b.addRating(4.5);
+	public void test_setter_and_getter_numberOfWords_OverMax_GoodNumber(){
+		testClassDefinition();
+		Book c = new BookMock("Heidi", 10);
+		c.setNumberOfWords(500001);
+		assertEquals("Created book with an invalid number of words", 10, c.getNumberOfWords());
+	}
 	
-		assertEquals("Added many ratings (8.0,6.0,-2,11,4.5)", 5.7, b.getAverageRating(), 0.000001);
-		assertEquals("Added many ratings(8.0,6.0,-2,11,4.5)", 10.0, b.getHighestRating(), 0.000001);
+	// Test difficulty
+	@Test
+	public void test_difficulty_easy(){
+		testClassDefinition();
+		BookMock b = new BookMock("Test", 500);
+		b.next = 1;
+		assertEquals("minutes to consume is 1, expected difficulty Easy", "Easy", b.difficulty());
+		b.next = 29;
+		assertEquals("minutes to consume is 29, expected difficulty Easy", "Easy", b.difficulty());
 	}
 	
 	@Test
-	public void test_mergeRatings_oneRatingEach()
-	{
-		Book b = new Book("Hamlet");
-		b.addRating(8.0);
-		
-		Book b1 = new Book("Hamlet");
-		b1.addRating(6.0);
-		
-		Book m = b1.mergeRatings(b);
-		assertEquals("Testing merged book average rating", 7.0, m.getAverageRating(), 0.000001);
-		assertEquals("Testing merged book highest rating", 8.0, m.getHighestRating(), 0.000001);
-		
-		assertEquals("Testing first book average rating (should be unchanged)", 8.0, b.getAverageRating(), 0.000001);
-		assertEquals("Testing first book highest rating (should be unchanged)", 8.0, b.getHighestRating(), 0.000001);
+	public void test_difficulty_moderate(){
+		testClassDefinition();
+		BookMock b = new BookMock("Test", 500);
+		b.next = 30;
+		assertEquals("minutes to consume is 30", "Moderate", b.difficulty());
+		b.next = 119;
+		assertEquals("minutes to consume is 119", "Moderate", b.difficulty());
+	}
+	
+	@Test
+	public void test_difficulty_hard(){
+		testClassDefinition();
+		BookMock b = new BookMock("Test", 500);
+		b.next = 120;
+		assertEquals("minutes to consume is 120", "Hard", b.difficulty());
+		b.next = 239;
+		assertEquals("minutes to consume is 239", "Hard", b.difficulty());
+	}
+	
+	@Test
+	public void test_difficulty_extra_challenge(){
+		testClassDefinition();
+		BookMock b = new BookMock("Test", 500);
+		b.next = 240;
+		assertEquals("minutes to consume is 240", "Extra Challenge", b.difficulty());
+		b.next = 500;
+		assertEquals("minutes to consume is 500", "Extra Challenge", b.difficulty());
+		b.next = 12345676;
+		assertEquals("minutes to consume is 12345676", "Extra Challenge", b.difficulty());
+	}
+	
 
-		assertEquals("Testing second book average rating (should be unchanged)", 6.0, b1.getAverageRating(), 0.000001);
-		assertEquals("Testing second book highest rating (should be unchanged)", 6.0, b1.getHighestRating(), 0.000001);
-	}
+	
+	// Test toString
+	@Test
+	public void test_toString()
+	{
+		testClassDefinition();
+		BookMock c = new BookMock("Neverwhere", 75000);
+		c.next = 100;
+		assertEquals("Neverwhere with 100 minutes to consume", "Title: Neverwhere Difficulty: Moderate", c.toString());
+	}	
 
 	@Test
-	public void test_mergeRatings_onlyOneBookHasRatings()
+	public void test_toString2()
 	{
-		Book b = new Book("Hamlet");
-		b.addRating(8.0);
-		b.addRating(7.0);
-		
-		Book b1 = new Book("Hamlet");
-		
-		Book m = b1.mergeRatings(b);
-		assertEquals("Merged ratings", 7.5, m.getAverageRating(), 0.000001);
-		assertEquals("Merged ratings", 8.0, m.getHighestRating(), 0.000001);
-
-		assertEquals("Testing first book average rating (should be unchanged)", 7.5, b.getAverageRating(), 0.000001);
-		assertEquals("Testing first book highest rating (should be unchanged)", 8.0, b.getHighestRating(), 0.000001);
-
-		assertEquals("Testing second book average rating (should be unchanged)", 0.0, b1.getAverageRating(), 0.000001);
-		assertEquals("Testing second book highest rating (should be unchanged)", 0.0, b1.getHighestRating(), 0.000001);
-	}
-
-	@Test
-	public void test_mergeRatings_bothBooksHaveMultipleRatings()
-	{
-		Book b = new Book("The Very Hungry Caterpillar");
-		b.addRating(10.0);
-		b.addRating(4.0);
-		b.addRating(12.0);
-		b.addRating(9.75);
-		
-		Book b1 = new Book("The Very Hungry Caterpillar");
-		b1.addRating(-11);
-		b1.addRating(6.5);
-		b1.addRating(4.3);
-		
-		Book m = b1.mergeRatings(b);
-		assertEquals("Merged ratings", 6.3642857, m.getAverageRating(), 0.000001);
-		assertEquals("Merged ratings", 10.0, m.getHighestRating(), 0.000001);
-
-		assertEquals("Testing first book average rating (should be unchanged)", 8.4375, b.getAverageRating(), 0.000001);
-		assertEquals("Testing first book highest rating (should be unchanged)", 10, b.getHighestRating(), 0.000001);
-
-		assertEquals("Testing second book average rating (should be unchanged)", 3.6, b1.getAverageRating(), 0.000001);
-		assertEquals("Testing second book highest rating (should be unchanged)", 6.5, b1.getHighestRating(), 0.000001);
-	}
-
-	@Test
-	public void test_mergeRatings_titleMismatch()
-	{
-		Book b = new Book("A Midsummer Night's Dream");
-		b.addRating(8.0);
-		
-		Book b1 = new Book("Macbeth");
-		b1.addRating(6.0);
-		
-		assertNull("Merged ratings", b.mergeRatings(b1));
-
-		assertEquals("Testing first book average rating (should be unchanged)", 8.0, b.getAverageRating(), 0.000001);
-		assertEquals("Testing first book highest rating (should be unchanged)", 8.0, b.getHighestRating(), 0.000001);
-
-		assertEquals("Testing second book average rating (should be unchanged)", 6.0, b1.getAverageRating(), 0.000001);
-		assertEquals("Testing second book highest rating (should be unchanged)", 6.0, b1.getHighestRating(), 0.000001);
-	}
-	
+		testClassDefinition();
+		BookMock c = new BookMock("Neverwhere", 75000);
+		c.next = 500;
+		assertEquals("Neverwhere with 500 minutes to consume", "Title: Neverwhere Difficulty: Extra Challenge", c.toString());
+	}	
 }
