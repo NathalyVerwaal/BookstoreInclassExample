@@ -22,6 +22,7 @@ public class BookTest extends FormatTester{
 		public int minutesToConsume(){
 			return next;
 		}
+
 	} 
 
 	public static final String CLASSNAME = "Book";

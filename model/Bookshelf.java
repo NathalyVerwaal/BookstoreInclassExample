@@ -28,9 +28,9 @@ public class Bookshelf extends Object {
 		asString.append(name);
 		asString.append("\n");
 		for (Book aBook : booksOnShelf) {
-			asString.append(aBook.getTitle());
-			asString.append(", ");
-			asString.append(aBook.getAverageRating());
+			asString.append(aBook.toString());
+			asString.append(" minutes to consume: ");
+			asString.append(aBook.minutesToConsume());
 			asString.append("\n");
 		}
 		//loop to add all the books to the string
@@ -48,7 +48,7 @@ public class Bookshelf extends Object {
 					return;
 				}
 			}
-			booksOnShelf.add(new Book(b));
+			booksOnShelf.add(b);
 		}
 	}
 

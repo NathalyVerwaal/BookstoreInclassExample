@@ -46,7 +46,7 @@ public class PaperBookTest extends FormatTester {
 	public void testCopyConstructor()
 	{
 		testClassDefinition();
-		PaperBook c = new PaperBook("The Fifth Season", 80000, 100);
+		Book c = new PaperBook("The Fifth Season", 80000, 100);
 		PaperBook c1 = new PaperBook(c);
 		assertEquals("Created book with title The Fifth Season", "The Fifth Season", c1.getTitle());
 		assertEquals("Created book with numberOfWords 80000", 80000, c1.getNumberOfWords());
@@ -132,28 +132,28 @@ public class PaperBookTest extends FormatTester {
 	@Test
 	public void test_difficulty_easy(){
 		testClassDefinition();
-		PaperBook b = new PaperBook("Test", 20, 3);
+		Book b = new PaperBook("Test", 20, 3);
 		assertEquals("num words: 20, numPage: 3, expected difficulty Easy", "Easy", b.difficulty());
 	}
 	
 	@Test
 	public void test_difficulty_moderate(){
 		testClassDefinition();
-		PaperBook b = new PaperBook("Test", 10000, 20);
+		Book b = new PaperBook("Test", 10000, 20);
 		assertEquals("num words: 10000, num pages: 20", "Moderate", b.difficulty());
 	}
 	
 	@Test
 	public void test_difficulty_hard(){
 		testClassDefinition();
-		PaperBook b = new PaperBook("Test", 2000,300);
+		Book b = new PaperBook("Test", 2000,300);
 		assertEquals("numWords: 2000, numPages: 300", "Hard", b.difficulty());
 	}
 	
 	@Test
 	public void test_difficulty_extra_challenge(){
 		testClassDefinition();
-		PaperBook b = new PaperBook("Test", 500000, 100);
+		Book b = new PaperBook("Test", 500000, 100);
 		assertEquals("numWords: 500,000 numPages: 100", "Extra Challenge", b.difficulty());
 	}	
 	
@@ -164,7 +164,7 @@ public class PaperBookTest extends FormatTester {
 		testClassDefinition();
 		assertTrue("Should override toString and it should invoke parent toString (not getter methods in parent).", toStrInvokesParentToStr());
 
-		PaperBook c = new PaperBook("Neverwhere", 75000, 100);
+		Book c = new PaperBook("Neverwhere", 75000, 100);
 		assertEquals("Neverwhere, 75000 words, 100 pages", "Title: Neverwhere Difficulty: Extra Challenge Pages: 100", c.toString());
 	}
 	
@@ -174,7 +174,7 @@ public class PaperBookTest extends FormatTester {
 		testClassDefinition();
 		assertTrue("Should override toString and it should invoke parent toString (not getter methods in parent).", toStrInvokesParentToStr());
 
-		PaperBook c = new PaperBook("Another book", 5000, 25);
+		Book c = new PaperBook("Another book", 5000, 25);
 		assertEquals("Another book, 5000 words, 25 pages", "Title: Another book Difficulty: Moderate Pages: 25", c.toString());
 	}
 	

@@ -1,5 +1,7 @@
 package application;
 
+import java.util.Random;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -41,7 +43,17 @@ public class BookstoreController {
     void addBook(ActionEvent event) {
     	// Get the title of the book to add
     	String title = bookTitleTextfield.getText();
-    	Book aBook = new Book(title);
+    	Book aBook = null;
+    	
+    	Random rand = new Random();
+    	String type = "";
+    	if (rand.nextBoolean()) {
+    		aBook = new PaperBook(title,10000,500);
+    		type = "paper";
+    	} else {
+    		aBook = new AudioBook(title,50000,1.0);
+    		type = "audio";
+    	}
     	
     	// add the book to the shelf (in the model)
     	shelf.addBook(aBook);
@@ -52,7 +64,7 @@ public class BookstoreController {
     	ObservableList<Book> comboBoxList = FXCollections.observableArrayList(shelf.getBooksOnShelf());
     	shelfComboBox.setItems(comboBoxList);
     	
-    	System.out.println("add book");
+    	System.out.println("add book " + type);
 
     }
 

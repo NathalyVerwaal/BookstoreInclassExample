@@ -7,9 +7,16 @@ public class Book {
 	private double averageRating;
 	private double highestRating;
 	private int numRatings;
-
+	private int numOfWords;
+	
 	public Book(String aTitle) {
+		this(aTitle, 0);
+	}
+	
+	public Book(String aTitle, int numOfWords) {
 		title = aTitle;
+		this.numOfWords = numOfWords;
+		
 	}
 
 	public Book(Book b) {
@@ -46,10 +53,16 @@ public class Book {
 	public double getHighestRating() {
 		return highestRating;
 	}
+	
+	public Object difficulty() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 	public Book mergeRatings(Book b) {
 		if (title.equalsIgnoreCase(b.title)) {
-			Book mergedBook = new Book(title);
+			Book mergedBook = new Book(title,numOfWords);
 			mergedBook.highestRating= Math.max(highestRating, b.highestRating);
 			mergedBook.numRatings = numRatings + b.numRatings;
 			mergedBook.averageRating = 
@@ -58,6 +71,27 @@ public class Book {
 			
 		}
 		return null;
+	}
+
+	public int getNumberOfWords() {
+		// TODO Auto-generated method stub
+		return numOfWords;
+	}
+
+	public void setNumberOfWords(int numOfWords) {
+		this.numOfWords = numOfWords;
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setTitle(String aTitle) {
+		title = aTitle;
+		// TODO Auto-generated method stub
+		
+	}
+
+	public int minutesToConsume() {
+		return numOfWords/400;
 	}
 
 }
